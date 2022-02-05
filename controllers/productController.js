@@ -13,7 +13,7 @@ const createProduct = async (req, res) => {
 
 const getSingleProduct = async (req, res) => {
   const productID = req.params.id;
-  const product = await Product.findOne({ _id: productID });
+  const product = await Product.findOne({ _id: productID }).populate("reviews");
   if (!product) {
     return notFoundError(res, "Product", productID);
   }
@@ -32,15 +32,16 @@ const updateProduct = async (req, res) => {
   if (!product) {
     return notFoundError(res, "Product", productID);
   }
-  res.send(product);
+  res.status(200).json(product);
 };
 
 const deleteProduct = async (req, res) => {
   const productID = req.params.id;
-  const product = await Product.findOneAndRemove({ _id: productID });
+  const product = await Product.findOne({ _id: productID });
   if (!product) {
     return notFoundError(res, "Product", productID);
   }
+  product.remove();
   res
     .status(200)
     .json({ msg: `Product successfully deleted with id '${productID}'` });

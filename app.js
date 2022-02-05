@@ -10,11 +10,13 @@ const mongoose = require("mongoose");
 //middlewares
 app.use(express.json());
 
-//import routes
+//import routers
 const productRouter = require("./routers/productRouter");
+const reviewRouter = require("./routers/reviewRouter");
 
 //routes
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 app.route("/").get((req, res) => {
   res.send("api is running");
