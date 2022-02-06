@@ -3,28 +3,34 @@ const notFoundError = require("../utils/send-not-found");
 const Product = require("../models/Product");
 
 const getAllReviews = async (req, res) => {
-  const reviews = await Review.find({});
+  const reviews = await Review.find({}).populate(
+    "product",
+    "title manufacturer price"
+  );
   res.status(200).json({ noReviews: reviews.length, reviews });
 };
 
 const createReview = async (req, res) => {
   const { product: productID } = req.body;
   const product = await Product.findOne({ _id: productID });
-  // check if the Product exists 
+  // check if the Product exists
   if (!product) {
     return notFoundError(res, "Product", productID);
   }
   const review = await Review.create({ ...req.body });
-  res.status(201).json({ msg: "Review succesfully created", review });
+  return res.status(201).json({ msg: "Review succesfully created", review });
 };
 
 const getSingleReview = async (req, res) => {
   const reviewID = req.params.id;
-  const review = await Review.findOne({ _id: reviewID });
+  const review = await Review.findOne({ _id: reviewID }).populate(
+    "product",
+    "title manufacturer price"
+  );
   if (!review) {
     return notFoundError(res, "Review", reviewID);
   }
-  res.status(200).json({ review });
+  return res.status(200).json({ review });
 };
 
 const updateReview = async (req, res) => {
@@ -49,7 +55,7 @@ const deleteReview = async (req, res) => {
   if (!review) {
     return notFoundError(res, "Review", reviewID);
   }
-  res
+  returnres
     .status(200)
     .json({ msg: `Review successfully deleted with id '${reviewID}'` });
 };
