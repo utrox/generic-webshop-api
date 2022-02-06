@@ -1,5 +1,6 @@
 const Review = require("../models/Review");
 const notFoundError = require("../utils/send-not-found");
+const Product = require("../models/Product");
 
 const getAllReviews = async (req, res) => {
   const reviews = await Review.find({});
@@ -7,6 +8,12 @@ const getAllReviews = async (req, res) => {
 };
 
 const createReview = async (req, res) => {
+  const { product: productID } = req.body;
+  const product = await Product.findOne({ _id: productID });
+  // check if the Product exists 
+  if (!product) {
+    return notFoundError(res, "Product", productID);
+  }
   const review = await Review.create({ ...req.body });
   res.status(201).json({ msg: "Review succesfully created", review });
 };

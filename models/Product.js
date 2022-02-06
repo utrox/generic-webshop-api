@@ -9,6 +9,7 @@ const supportedCategories = [
   "other",
 ];
 
+// construct Product the schema
 const ProductSchema = mongoose.Schema(
   {
     title: {
@@ -62,8 +63,9 @@ ProductSchema.virtual("reviews", {
   justOne: false,
 });
 
-ProductSchema.pre("remove", (next) => {
-  // TODO: remove all reviews where the removed Product is the referenced product
+// when deleting a Product, remove all Reviews that reference it.
+ProductSchema.pre("remove", function (next) {
+  Review.deleteMany({ product: this._id }, next);
 });
 
 module.exports = mongoose.model("Product", ProductSchema);
