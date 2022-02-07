@@ -10,3 +10,4 @@
   - use cookie-parser package
   - after successful login, attach !secure, signed, httponly! cookie
   - when accessing route where authorization is needed, read that cookie.
+- calculate the avg rating when getting a Product

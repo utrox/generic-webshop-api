@@ -7,8 +7,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   if (err.name === "ValidationError") {
     customError.statusCode = 400;
   }
-  // return res.send(err);
-  res.send({ msg: customError.msg });
+  res.status(customError.statusCode).send({ msg: customError.msg });
 };
 
 module.exports = errorHandlerMiddleware;

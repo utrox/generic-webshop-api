@@ -8,11 +8,15 @@ const {
   deleteProduct,
 } = require("../controllers/productController");
 
-router.route("/").get(getAllProducts).post(createProduct);
+const { authMiddleware } = require("../middlewares/auth-middleware");
+
+router.route("/").get(getAllProducts).post(authMiddleware, createProduct);
 router
   .route("/:id")
   .get(getSingleProduct)
-  .put(updateProduct)
-  .delete(deleteProduct);
+  .put(authMiddleware, updateProduct)
+  .delete(authMiddleware, deleteProduct);
 
 module.exports = router;
+
+// todo -> only admins should be able to manipulate the database.

@@ -14,11 +14,10 @@ const ReviewSchema = mongoose.Schema(
       trim: true,
       required: [true, "Please input text for the review body"],
     },
-    username: {
-      type: String,
-      maxlength: 100,
-      trim: true,
-      required: [true, "Please input public name"],
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: [true, "No user given."],
     },
     product: {
       type: mongoose.Types.ObjectId,

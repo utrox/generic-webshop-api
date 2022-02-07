@@ -42,15 +42,6 @@ const ProductSchema = mongoose.Schema(
         message: "{VALUE} is not a supported category",
       },
     },
-    rating: {
-      type: Number,
-      min: 1,
-      max: 5,
-    },
-    image: {
-      type: String,
-      default: "/uploads/default.png",
-    },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );

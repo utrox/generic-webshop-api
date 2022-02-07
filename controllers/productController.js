@@ -1,6 +1,6 @@
 const { query } = require("express");
 const Product = require("../models/Product");
-const notFoundError = require("../utils/send-not-found");
+const notFoundError = require("../utils/notFoundError");
 
 const getAllProducts = async (req, res) => {
   const { search, price, category, manufacturer, order_by } = req.query;

@@ -8,11 +8,13 @@ const {
   deleteReview,
 } = require("../controllers/reviewController");
 
-router.route("/").get(getAllReviews).post(createReview);
+const { authMiddleware } = require("../middlewares/auth-middleware");
+
+router.route("/").get(getAllReviews).post(authMiddleware, createReview);
 router
   .route("/:id")
   .get(getSingleReview)
-  .put(updateReview)
-  .delete(deleteReview);
+  .put(authMiddleware, updateReview)
+  .delete(authMiddleware, deleteReview);
 
 module.exports = router;
