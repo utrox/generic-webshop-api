@@ -6,10 +6,8 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
-var cookieParser = require("cookie-parser");
 
 //middlewares
-app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.json());
 
 //import routers
