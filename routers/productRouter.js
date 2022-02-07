@@ -18,5 +18,3 @@ router
   .delete(authMiddleware, deleteProduct);
 
 module.exports = router;
-
-// todo -> only admins should be able to manipulate the database.

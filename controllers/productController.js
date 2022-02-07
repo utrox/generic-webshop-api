@@ -1,6 +1,7 @@
 const { query } = require("express");
 const Product = require("../models/Product");
 const notFoundError = require("../utils/notFoundError");
+const { checkAdminPermission } = require("../utils/check-authorization");
 
 const getAllProducts = async (req, res) => {
   const { search, price, category, manufacturer, order_by } = req.query;
@@ -36,6 +37,7 @@ const getAllProducts = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
+  checkAdminPermission(req.user.role);
   const product = await Product.create({ ...req.body });
   res.status(201).json({ msg: "Product succesfully created", product });
 };
@@ -54,6 +56,7 @@ const getSingleProduct = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
+  checkAdminPermission(req.user.role);
   const productID = req.params.id;
   const { title, manufacturer, description, price, category, rating } =
     req.body;
@@ -69,6 +72,7 @@ const updateProduct = async (req, res) => {
 };
 
 const deleteProduct = async (req, res) => {
+  checkAdminPermission(req.user.role);
   const productID = req.params.id;
   const product = await Product.findOne({ _id: productID });
   if (!product) {
