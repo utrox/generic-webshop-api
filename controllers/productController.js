@@ -36,7 +36,6 @@ const getAllProducts = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-  console.log(req.body);
   const product = await Product.create({ ...req.body });
   res.status(201).json({ msg: "Product succesfully created", product });
 };

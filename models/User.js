@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const UserSchema = mongoose.Schema({
   username: {
@@ -25,6 +27,21 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: [true, "Please provide password"],
   },
+  role: { type: String, default: "user", enum: ["user", "admin"] },
 });
+
+UserSchema.pre("save", async function (next) {
+  // hash the password before saving to the database if it's a new entry. When editing old entries this ensures that the password doesn't get hashed again.
+  if (this.isNew) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+});
+
+UserSchema.methods.generateJWT = (payload) => {
+  return jwt.sign({ payload }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+};
 
 module.exports = mongoose.model("User", UserSchema);

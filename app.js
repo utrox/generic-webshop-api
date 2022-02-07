@@ -6,17 +6,21 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
+var cookieParser = require("cookie-parser");
 
 //middlewares
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.json());
 
 //import routers
 const productRouter = require("./routers/productRouter");
 const reviewRouter = require("./routers/reviewRouter");
+const authRouter = require("./routers/authRouter");
 
 //routes
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/reviews", reviewRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.route("/").get((req, res) => {
   res.send("api is running");
@@ -26,7 +30,7 @@ app.route("/").get((req, res) => {
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 const notFoundMiddleware = require("./middlewares/not-found");
 app.use(notFoundMiddleware);
-app.use(errorHandlerMiddleware);
+//app.use(errorHandlerMiddleware);
 
 // starting the server
 const startServer = () => {
