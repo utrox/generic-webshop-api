@@ -15,12 +15,10 @@ app.use(express.json());
 //import routers
 const productRouter = require("./routers/productRouter");
 const reviewRouter = require("./routers/reviewRouter");
-const authRouter = require("./routers/authRouter");
 
 //routes
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/reviews", reviewRouter);
-app.use("/api/v1/auth", authRouter);
 
 app.route("/").get((req, res) => {
   res.send("api is running");
