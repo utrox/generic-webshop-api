@@ -12,3 +12,5 @@
   - when accessing route where authorization is needed, read that cookie.
 - calculate the avg rating when getting a Product
 - send email (forgot password)
+- remove password and recoverycode from the API response.
+- implement delay when not sending email.

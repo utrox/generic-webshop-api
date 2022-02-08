@@ -43,7 +43,11 @@ const ProductSchema = mongoose.Schema(
       },
     },
   },
-  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+    versionKey: false,
+  }
 );
 
 // form virtual "connection" between the Product and every Review that references it in the 'product' field.

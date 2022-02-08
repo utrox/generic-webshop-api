@@ -1,6 +1,15 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const path = require("path");
 const attachAuthCookie = require("../utils/attachAuthCookie");
+const sendRecoveryEmail = require("../utils/send-mail");
+const sleep = require("../utils/sleep");
+
+const recoveryInstructionsHTML = path.join(
+  __dirname,
+  "..",
+  "recoveryInstructions.html"
+);
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -45,4 +54,45 @@ const register = async (req, res) => {
   return res.status(201).json({ msg: "user successfully created" });
 };
 
-module.exports = { login, logout, register };
+const requestRecovery = async (req, res) => {
+  const { email } = req.body;
+  const account = await User.findOne({ email });
+  // avoid data-leak
+  if (!account) {
+    console.log("email not found.");
+    await sleep(1500);
+    return res
+      .status(200)
+      .send("Recovery email sent. It expires in 10 minutes. //fake");
+  }
+  const recoveryToken = account.generateRecoveryToken();
+  account.recoveryToken = recoveryToken;
+  await account.save();
+  const payload = {
+    userID: account.id,
+    recoveryToken,
+  };
+  const jwtToken = account.generateJWT(payload);
+  sendRecoveryEmail(email, account.username, jwtToken);
+  return res.status(200).send("Recovery email sent. It expires in 10 minutes.");
+};
+
+const recovery = async (req, res) => {
+  const { password, confirmPassword } = req.body;
+  console.log(password, confirmPassword);
+
+  res.send("recovery route");
+};
+
+const recoveryInstructions = async (req, res) => {
+  res.sendFile(recoveryInstructionsHTML);
+};
+
+module.exports = {
+  login,
+  logout,
+  register,
+  recovery,
+  requestRecovery,
+  recoveryInstructions,
+};

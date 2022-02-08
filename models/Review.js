@@ -30,7 +30,7 @@ const ReviewSchema = mongoose.Schema(
       max: 5,
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 module.exports = mongoose.model("Review", ReviewSchema);
