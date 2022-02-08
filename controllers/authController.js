@@ -1,9 +1,11 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const path = require("path");
+const jwt = require("jsonwebtoken");
 const attachAuthCookie = require("../utils/attachAuthCookie");
 const sendRecoveryEmail = require("../utils/send-mail");
 const sleep = require("../utils/sleep");
+const customError = require("../utils/customError");
 
 const recoveryInstructionsHTML = path.join(
   __dirname,
@@ -41,11 +43,6 @@ const logout = async (req, res) => {
 const register = async (req, res) => {
   // deconstruct it, so the user can't pass in "role": "admin" and grand themselves admin authorization.
   const { username, email, password } = req.body;
-  if (!password || password.length < 6 || password.length > 12) {
-    return res
-      .status(400)
-      .json({ msg: "Password must be between 6 and 12 characters long." });
-  }
   const newUser = await User.create({ username, email, password });
   const payload = { userID: newUser._id, role: newUser.role };
   const token = newUser.generateJWT(payload);
@@ -65,25 +62,45 @@ const requestRecovery = async (req, res) => {
       .status(200)
       .send("Recovery email sent. It expires in 10 minutes. //fake");
   }
-  const recoveryToken = account.generateRecoveryToken();
-  account.recoveryToken = recoveryToken;
-  await account.save();
-  const payload = {
-    userID: account.id,
-    recoveryToken,
-  };
-  const jwtToken = account.generateJWT(payload);
-  sendRecoveryEmail(email, account.username, jwtToken);
+
+  const recoveryJWT = await account.generateRecoveryToken(account.id);
+  sendRecoveryEmail(email, account.username, recoveryJWT);
   return res.status(200).send("Recovery email sent. It expires in 10 minutes.");
 };
 
 const recovery = async (req, res) => {
-  const { password, confirmPassword } = req.body;
-  console.log(password, confirmPassword);
+  const unverifiedToken = req.params.token;
+  const { newPassword, confirmNewPassword } = req.body;
 
-  res.send("recovery route");
+  if (!newPassword || newPassword !== confirmNewPassword) {
+    throw new customError(
+      "Please ensure you're providing two matching passwords.",
+      400
+    );
+  }
+
+  // decodes and verifies the JWT
+  const verifiedToken = await jwt.verify(
+    unverifiedToken,
+    process.env.JWT_SECRET
+  );
+
+  const { userID, recoveryToken } = verifiedToken.payload;
+  const account = await User.findOne({ _id: userID });
+
+  if (!account) {
+    throw new customError("Invalid token.", 404);
+  }
+
+  // throws an error if the token is invalid
+  await account.validateRecoveryToken(recoveryToken);
+
+  account.password = newPassword;
+  await account.save();
+  res.status(200).send("Password has changed.");
 };
 
+// temporary solution instead of requiring a front-end
 const recoveryInstructions = async (req, res) => {
   res.sendFile(recoveryInstructionsHTML);
 };

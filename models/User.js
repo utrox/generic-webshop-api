@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 const returnHash = require("../utils/return-hash");
+const customError = require("../utils/customError");
 
 const UserSchema = mongoose.Schema(
   {
@@ -46,22 +48,47 @@ const UserSchema = mongoose.Schema(
 );
 
 UserSchema.pre("save", async function (next) {
-  // hash the password before saving to the database if it's a new entry. When editing existing entries this ensures that the password doesn't get hashed again.
-  if (this.isNew) {
+  // hash the password before saving to the database if it's a new entry, or has been changed. When editing existing entries this ensures that the password doesn't get hashed again.
+  if (this.isNew || this.modifiedPaths().includes("password")) {
+    if (this.password.length < 6 || this.password.length > 12) {
+      console.log(this.password.length);
+      throw new customError(
+        "Password must be between 6 and 12 characters long.",
+        400
+      );
+    }
     this.password = await returnHash(this.password);
-  } else if (this.modifiedPaths().includes("recoveryToken")) {
-    // when saving a recoveryToken, hashing it like a password seems like good practice
-    this.recoveryToken = await returnHash(this.recoveryToken);
   }
   next();
 });
 
-UserSchema.methods.generateJWT = (payload) => {
-  return jwt.sign({ payload }, process.env.JWT_SECRET);
+UserSchema.methods.generateJWT = (payload, options = {}) => {
+  return jwt.sign({ payload }, process.env.JWT_SECRET, options);
 };
 
-UserSchema.methods.generateRecoveryToken = () => {
-  return crypto.randomBytes(16).toString("hex");
+UserSchema.methods.generateRecoveryToken = async function (userID) {
+  // generate random recovery token
+  const recoveryToken = crypto.randomBytes(16).toString("hex");
+  // hash and store it in the database
+  console.log(recoveryToken);
+  this.recoveryToken = await returnHash(recoveryToken);
+  this.save();
+  // generate JWT and return it.
+  const jwtToken = this.generateJWT(
+    { userID, recoveryToken: recoveryToken },
+    { expiresIn: "10m" }
+  );
+  return jwtToken;
+};
+
+UserSchema.methods.validateRecoveryToken = async function (recoveryToken) {
+  const isValid = await bcrypt.compare(recoveryToken, this.recoveryToken);
+  console.log(isValid);
+  if (!isValid) {
+    throw new customError("Invalid token.", 401);
+  }
+  this.recoveryToken = "";
+  await this.save();
 };
 
 module.exports = mongoose.model("User", UserSchema);
