@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const attachAuthCookie = require("../utils/attachAuthCookie");
-const sendRecoveryEmail = require("../utils/send-mail");
+const { sendVerifyEmail, sendRecoveryEmail } = require("../utils/send-mail");
 const sleep = require("../utils/sleep");
 const customError = require("../utils/customError");
 
@@ -13,15 +13,45 @@ const recoveryInstructionsHTML = path.join(
   "recoveryInstructions.html"
 );
 
+const register = async (req, res) => {
+  // deconstruct it, so the user can't pass in "role": "admin" and grand themselves admin authorization.
+  const { username, email, password } = req.body;
+  const newUser = await User.create({ username, email, password });
+  const activationToken = newUser.activationToken;
+  console.log(activationToken);
+  sendVerifyEmail(email, username, activationToken);
+  return res.status(201).json({
+    msg: "Account successfully created. Please verify your email adress before proceeding.",
+  });
+};
+
+const activateAccount = async (req, res) => {
+  const { activationToken } = req.params;
+  const account = await User.findOne({ activationToken });
+  if (!account) {
+    throw new customError("Invalid activation token.", 400);
+  }
+  account.activationToken = "";
+  account.isActive = true;
+  await account.save();
+  res.send("Your account has been activated. You can now proceed to log in.");
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(401).json({ msg: "Wrong credentials." });
+    throw new customError("Wrong credentials.", 401);
   }
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
-    return res.status(401).json({ msg: "Wrong credentials." });
+    throw new customError("Wrong credentials.", 401);
+  }
+  if (!user.isActive) {
+    throw new customError(
+      "The account has not been activated yet. Please check your email inbox.",
+      401
+    );
   }
   const payload = { userID: user._id, role: user.role };
   const token = user.generateJWT(payload);
@@ -38,17 +68,6 @@ const logout = async (req, res) => {
     /* secure: true, */ httpOnly: true,
   });
   return res.status(200).send("Logged out successfully.");
-};
-
-const register = async (req, res) => {
-  // deconstruct it, so the user can't pass in "role": "admin" and grand themselves admin authorization.
-  const { username, email, password } = req.body;
-  const newUser = await User.create({ username, email, password });
-  const payload = { userID: newUser._id, role: newUser.role };
-  const token = newUser.generateJWT(payload);
-  // TODO remove comment from attachAuthCookie for "production" version
-  attachAuthCookie(res, token);
-  return res.status(201).json({ msg: "user successfully created" });
 };
 
 const requestRecovery = async (req, res) => {
@@ -112,4 +131,5 @@ module.exports = {
   recovery,
   requestRecovery,
   recoveryInstructions,
+  activateAccount,
 };

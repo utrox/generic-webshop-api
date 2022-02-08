@@ -39,6 +39,14 @@ const UserSchema = mongoose.Schema(
       default: "user",
       enum: ["user", "admin"],
     },
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
+    activationToken: {
+      type: String,
+      default: crypto.randomBytes(64).toString("hex"),
+    },
     recoveryToken: {
       type: String,
       required: false,
@@ -50,14 +58,16 @@ const UserSchema = mongoose.Schema(
 UserSchema.pre("save", async function (next) {
   // hash the password before saving to the database if it's a new entry, or has been changed. When editing existing entries this ensures that the password doesn't get hashed again.
   if (this.isNew || this.modifiedPaths().includes("password")) {
+    // check if password's valid
     if (this.password.length < 6 || this.password.length > 12) {
-      console.log(this.password.length);
       throw new customError(
         "Password must be between 6 and 12 characters long.",
         400
       );
     }
     this.password = await returnHash(this.password);
+  }
+  if (this.isNew) {
   }
   next();
 });
