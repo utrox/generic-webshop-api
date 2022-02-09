@@ -15,14 +15,14 @@ const getAllReviews = async (req, res) => {
 const createReview = async (req, res) => {
   const { product: productID } = req.body;
   const { userID } = req.user;
-  console.log(req.user);
 
-  // check if the Product exists
+  // check if a product with this ID exists
   const product = await Product.findOne({ _id: productID });
   if (!product) {
     return notFoundError(res, "Product", productID);
   }
 
+  // check if a review already exists by the user about the product
   const productAlreadyReviewedByUser = await Review.findOne({
     user: userID,
     product: productID,
@@ -35,6 +35,9 @@ const createReview = async (req, res) => {
   }
 
   const review = await Review.create({ ...req.body, user: userID });
+
+  Product.updateAverageReviews(review.product);
+
   return res.status(201).json({ msg: "Review succesfully created", review });
 };
 
@@ -54,13 +57,25 @@ const getSingleReview = async (req, res) => {
 const updateReview = async (req, res) => {
   const reviewID = req.params.id;
   const { rating, title, text } = req.body;
-  const review = await Review.findOne({ _id: reviewID });
 
+  const review = await Review.findOne({ _id: reviewID });
   if (!review) {
     return notFoundError(res, "Review", reviewID);
   }
 
+  if (!rating && !title && !text) {
+    throw new CustomError("Please provide updated values.", 400);
+  }
+
   checkAuthorization(review.user.valueOf(), req.user);
+
+  // update fields where new value is provided
+  review.rating = rating || review.rating;
+  review.title = title || review.title;
+  review.text = text || review.text;
+  review.save();
+
+  Product.updateAverageReviews(review.product);
 
   res
     .status(200)
@@ -79,6 +94,9 @@ const deleteReview = async (req, res) => {
   checkAuthorization(review.user.valueOf(), req.user, res);
 
   await review.remove();
+
+  Product.updateAverageReviews(review.product);
+
   return res
     .status(200)
     .json({ msg: `Review successfully deleted with id '${reviewID}'` });

@@ -18,23 +18,33 @@ const ProductSchema = mongoose.Schema(
       trim: true,
       required: [true, "Please input name for the product"],
     },
-    manufacturer: {
-      type: String,
-      maxlength: 100,
-      trim: true,
-      default: "Unknown",
-    },
+
     description: {
       type: String,
       maxlength: 500,
       trim: true,
       required: [true, "Please input description for the product"],
     },
+
     price: {
       type: Number,
       min: [1, "Price cannot be lower than $1."],
       required: [true, "Please input price for the product"],
     },
+
+    averageRating: {
+      type: Number,
+      min: [1, "There was some kind of error. Rating too low."],
+      max: [5, "There was some kind of error. Rating too high."],
+    },
+
+    manufacturer: {
+      type: String,
+      maxlength: 100,
+      trim: true,
+      default: "Unknown",
+    },
+
     category: {
       type: String,
       enum: {
@@ -58,9 +68,24 @@ ProductSchema.virtual("reviews", {
   justOne: false,
 });
 
+ProductSchema.statics.updateAverageReviews = async function (productID) {
+  // get and calculate average of those reviews' ratings
+  const reviewsAboutProduct = await Review.find({ product: productID });
+  const total = reviewsAboutProduct.reduce((prevValue, review) => {
+    return prevValue + review.rating;
+  }, 0);
+  const averageRating = total / reviewsAboutProduct.length;
+
+  const product = await this.findOneAndUpdate(
+    { _id: productID },
+    { averageRating },
+    { runValidators: true, new: true }
+  );
+};
+
 // when deleting a Product, remove all Reviews that reference it.
 ProductSchema.pre("remove", function (next) {
   Review.deleteMany({ product: this._id }, next);
 });
 
-module.exports = mongoose.model("Product", ProductSchema);
+module.exports = new mongoose.model("Product", ProductSchema);
