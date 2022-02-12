@@ -21,6 +21,11 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     customError.statusCode = 400;
   }
 
+  if (err.code === "LIMIT_UNEXPECTED_FILE") {
+    customError.msg =
+      "You are limited to uploading a maximum of 5 files in each upload.";
+    customError.statusCode = 400;
+  }
   if (err.code === 11000) {
     customError.msg = "";
     for (const [key, value] of Object.entries(err.keyValue)) {

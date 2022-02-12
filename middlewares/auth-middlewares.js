@@ -11,4 +11,13 @@ const authMiddleware = async (req, res, next) => {
   next();
 };
 
-module.exports = { authMiddleware };
+const checkAdminPermission = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    return res
+      .status(403)
+      .send("You are unauthorized to access this route.", 403);
+  }
+  next();
+};
+
+module.exports = { authMiddleware, checkAdminPermission };

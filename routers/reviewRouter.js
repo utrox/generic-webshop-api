@@ -8,7 +8,7 @@ const {
   deleteReview,
 } = require("../controllers/reviewController");
 
-const { authMiddleware } = require("../middlewares/auth-middleware");
+const { authMiddleware } = require("../middlewares/auth-middlewares");
 
 router.route("/").get(getAllReviews).post(authMiddleware, createReview);
 router

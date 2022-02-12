@@ -1,16 +1,11 @@
 # TODO
 
-- Test API
-- when deleting a product, remove all reviews associated with it.
-- Only allow certain people to add products.
-- Index page -> Documentation for API
-- (?) Add authorization instead of temporary secretKey:
-  - create model -> username, email, password fields
-  - use bcrypt for password hashing
-  - use cookie-parser package
-  - after successful login, attach !secure, signed, httponly! cookie
-  - when accessing route where authorization is needed, read that cookie.
-- calculate the avg rating when getting a Product
-- send email (forgot password)
 - remove password and recoverycode from the API response.
-- implement delay when not sending email.
+- upload product image functionality
+
+- Index page -> Documentation for API
+- Fully test API
+- except default.png. do not ever remove default.png
+- write populate database script
+- on the index page, make the exported Postman "folder" downloadable, so if someone wants to test the server, they just have to import this file into Postman
+- add usual security stuff

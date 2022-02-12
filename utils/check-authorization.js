@@ -7,10 +7,4 @@ const checkAuthorization = (userID, reqUserObj) => {
   }
 };
 
-const checkAdminPermission = (userRole) => {
-  if (userRole !== "admin") {
-    throw new CustomError("You are unauthorized to access this route.", 403);
-  }
-};
-
-module.exports = { checkAuthorization, checkAdminPermission };
+module.exports = { checkAuthorization };

@@ -1,41 +1,52 @@
-const { query } = require("express");
 const Product = require("../models/Product");
 const notFoundError = require("../utils/notFoundError");
-const { checkAdminPermission } = require("../utils/check-authorization");
+const { handleImages } = require("../utils/image-handling.js");
+const CustomError = require("../utils/customError");
 
 const createProduct = async (req, res) => {
-  checkAdminPermission(req.user.role);
-  const product = await Product.create({ ...req.body });
-  res.status(201).json({ msg: "Product succesfully created", product });
+  // create the product
+  const product = await Product.create({
+    ...req.body,
+  });
+
+  // validate and upload images
+  const imagePayload = {
+    currentImages: product.images,
+    imagesToAdd: req.files,
+    productID: product.id,
+    imagesToRemove: [],
+  };
+  const { imageHandling, currentImages: newImages } = await handleImages(
+    imagePayload
+  );
+
+  product.images = newImages;
+  product.markModified("images");
+  await product.save();
+  res.status(201).json({
+    msg: "Product succesfully created",
+    product,
+    imageHandling,
+  });
 };
 
 const getAllProducts = async (req, res) => {
   const { search, price, category, manufacturer, order_by } = req.query;
   const queryParameters = {};
 
-  // if order_by parameter is not given, default sort by the most recently added Product.
+  // sort default by most recent Product
   var sortBy = order_by || "-_id";
 
-  if (search) {
-    queryParameters.title = { $regex: search, $options: "i" };
-  }
+  // if these values are given, add them to queryParameters
+  search && (queryParameters.title = { $regex: search, $options: "i" });
+  category && (queryParameters.category = category);
+  manufacturer && (queryParameters.manufacturer = manufacturer);
 
+  // if a price is given...
   if (price) {
     const [min, max] = price.split("-");
-    if (!min || !max || min > max) {
-      return res.status(400).json({
-        msg: "Invalid price query. Please use 'price=minPrice-maxPrice' format.",
-      });
-    }
-    queryParameters.price = { $gte: min, $lte: max };
-  }
-
-  if (category) {
-    queryParameters.category = category;
-  }
-
-  if (manufacturer) {
-    queryParameters.manufacturer = manufacturer;
+    // ...check if it's a valid query. if not, ignore.
+    +min <= +max && (queryParameters.price = { $gte: min, $lte: max });
   }
 
   const products = await Product.find(queryParameters).sort(sortBy);
@@ -52,30 +63,47 @@ const getSingleProduct = async (req, res) => {
   if (!product) {
     return notFoundError(res, "Product", productID);
   }
+
   res.status(200).json({ product });
 };
 
 const updateProduct = async (req, res) => {
-  checkAdminPermission(req.user.role);
   const productID = req.params.id;
-  const { title, manufacturer, description, price, category, rating } =
+  const { title, manufacturer, description, price, category, imagesToRemove } =
     req.body;
+
   const product = await Product.findOneAndUpdate(
     { _id: productID },
-    { title, manufacturer, description, price, category, rating },
+    { title, manufacturer, description, price, category },
     { runValidators: true, context: "query", new: true }
   );
 
-  // using .save() to run .pre hook.
-  product.save();
   if (!product) {
     return notFoundError(res, "Product", productID);
   }
-  res.status(200).json(product);
+
+  const imagePayload = {
+    currentImages: product.images,
+    imagesToAdd: req.files,
+    productID: product.id,
+    imagesToRemove,
+  };
+  const { imageHandling, currentImages: newData } = await handleImages(
+    imagePayload
+  );
+
+  product.images = newData;
+  product.markModified("images");
+  await product.save();
+
+  res.status(200).json({
+    msg: "Updating the product was successful.",
+    product,
+    imageHandling,
+  });
 };
 
 const deleteProduct = async (req, res) => {
-  checkAdminPermission(req.user.role);
   const productID = req.params.id;
   const product = await Product.findOne({ _id: productID });
   if (!product) {

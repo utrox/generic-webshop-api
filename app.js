@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 
 //middlewares
+app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -31,7 +32,7 @@ app.route("/").get((req, res) => {
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 const notFoundMiddleware = require("./middlewares/not-found");
 app.use(notFoundMiddleware);
-app.use(errorHandlerMiddleware);
+//app.use(errorHandlerMiddleware);
 
 // starting the server
 const startServer = () => {

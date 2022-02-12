@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Review = require("./Review");
+const { removeImage } = require("../utils/image-handling");
 const supportedCategories = [
   "kitchen",
   "dining room",
@@ -52,6 +53,9 @@ const ProductSchema = mongoose.Schema(
         message: "{VALUE} is not a supported category",
       },
     },
+    images: {
+      type: Array,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -83,9 +87,14 @@ ProductSchema.statics.updateAverageReviews = async function (productID) {
   );
 };
 
-// when deleting a Product, remove all Reviews that reference it.
+// when deleting a Product ...
 ProductSchema.pre("remove", function (next) {
+  // ...remove all Reviews that reference it ...
   Review.deleteMany({ product: this._id }, next);
+  // ... remove all of this Product's images from the uploads folder.
+  this.images.forEach((image) => {
+    removeImage(image);
+  });
 });
 
 module.exports = new mongoose.model("Product", ProductSchema);

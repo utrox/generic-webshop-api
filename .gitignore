@@ -1,3 +1,5 @@
 node_modules/*
 .env
 cut-content/*
+uploads/*
+!uploads/default.png

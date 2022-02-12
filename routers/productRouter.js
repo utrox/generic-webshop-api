@@ -1,5 +1,8 @@
 const express = require("express");
+const multer = require("multer");
+const upload = multer();
 const router = express.Router();
+
 const {
   getAllProducts,
   createProduct,
@@ -7,14 +10,26 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers/productController");
+const {
+  authMiddleware,
+  checkAdminPermission,
+} = require("../middlewares/auth-middlewares");
 
-const { authMiddleware } = require("../middlewares/auth-middleware");
+router
+  .route("/")
+  .get(getAllProducts)
+  .post(
+    [authMiddleware, checkAdminPermission, upload.array("images", 5)],
+    createProduct
+  );
 
-router.route("/").get(getAllProducts).post(authMiddleware, createProduct);
 router
   .route("/:id")
   .get(getSingleProduct)
-  .put(authMiddleware, updateProduct)
-  .delete(authMiddleware, deleteProduct);
+  .put(
+    [authMiddleware, checkAdminPermission, upload.array("imagesToAdd", 5)],
+    updateProduct
+  )
+  .delete([authMiddleware, checkAdminPermission], deleteProduct);
 
 module.exports = router;
