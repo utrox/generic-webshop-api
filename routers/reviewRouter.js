@@ -14,7 +14,7 @@ router.route("/").get(getAllReviews).post(authMiddleware, createReview);
 router
   .route("/:id")
   .get(getSingleReview)
-  .put(authMiddleware, updateReview)
+  .patch(authMiddleware, updateReview)
   .delete(authMiddleware, deleteReview);
 
 module.exports = router;

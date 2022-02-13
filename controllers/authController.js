@@ -40,21 +40,24 @@ const activateAccount = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+
   if (!user) {
     throw new customError("Wrong credentials.", 401);
   }
+
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
     throw new customError("Wrong credentials.", 401);
   }
+
   if (!user.isActive) {
     throw new customError(
       "The account has not been activated yet. Please check your email inbox.",
       401
     );
   }
-  const payload = { userID: user._id, role: user.role };
-  const token = user.generateJWT(payload);
+
+  const token = await user.createLoginJWT();
   // TODO remove comment from attachAuthCookie for "production" version
   attachAuthCookie(res, token);
   res.status(200).json({ msg: "Logged in successfully." });

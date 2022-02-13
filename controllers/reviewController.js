@@ -36,8 +36,6 @@ const createReview = async (req, res) => {
 
   const review = await Review.create({ ...req.body, user: userID });
 
-  Product.updateAverageReviews(review.product);
-
   return res.status(201).json({ msg: "Review succesfully created", review });
 };
 
@@ -73,9 +71,7 @@ const updateReview = async (req, res) => {
   review.rating = rating || review.rating;
   review.title = title || review.title;
   review.text = text || review.text;
-  review.save();
-
-  Product.updateAverageReviews(review.product);
+  await review.save();
 
   res
     .status(200)
@@ -94,8 +90,6 @@ const deleteReview = async (req, res) => {
   checkAuthorization(review.user.valueOf(), req.user, res);
 
   await review.remove();
-
-  Product.updateAverageReviews(review.product);
 
   return res
     .status(200)

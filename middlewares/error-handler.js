@@ -27,6 +27,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     customError.statusCode = 400;
   }
   if (err.code === 11000) {
+    customError.statusCode = 409;
     customError.msg = "";
     for (const [key, value] of Object.entries(err.keyValue)) {
       customError.msg += `The following ${key} ('${value}') is already in use. `;

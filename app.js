@@ -24,6 +24,10 @@ app.use("/api/v1/products", productRouter);
 app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/auth", authRouter);
 
+app.route("/populate-database").get((req, res) => {
+  res.send("AAAAAAA");
+});
+
 app.route("/").get((req, res) => {
   res.send("api is running");
 });
@@ -32,7 +36,7 @@ app.route("/").get((req, res) => {
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 const notFoundMiddleware = require("./middlewares/not-found");
 app.use(notFoundMiddleware);
-//app.use(errorHandlerMiddleware);
+app.use(errorHandlerMiddleware);
 
 // starting the server
 const startServer = () => {

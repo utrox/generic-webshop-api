@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const returnHash = require("../utils/return-hash");
 const customError = require("../utils/customError");
+const createJWT = require("../utils/create-jwt");
 
 const UserSchema = mongoose.Schema(
   {
@@ -72,8 +72,10 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-UserSchema.methods.generateJWT = (payload, options = {}) => {
-  return jwt.sign({ payload }, process.env.JWT_SECRET, options);
+UserSchema.methods.createLoginJWT = async function () {
+  console.log(this);
+  const payload = { userID: this._id, role: this.role };
+  return createJWT(payload, { expiresIn: "24h" });
 };
 
 UserSchema.methods.generateRecoveryToken = async function (userID) {
@@ -82,9 +84,9 @@ UserSchema.methods.generateRecoveryToken = async function (userID) {
   // hash and store it in the database
   console.log(recoveryToken);
   this.recoveryToken = await returnHash(recoveryToken);
-  this.save();
+  await this.save();
   // generate JWT and return it.
-  const jwtToken = this.generateJWT(
+  const jwtToken = this.createJWT(
     { userID, recoveryToken: recoveryToken },
     { expiresIn: "10m" }
   );

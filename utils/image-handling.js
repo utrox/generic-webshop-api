@@ -109,7 +109,7 @@ const removeImages = (imagesToRemove = [], currentImages) => {
     // if this image is present in the array from the database...
     if (index > -1) {
       // ...remove from both disk and database.
-      removeImage(image);
+      deleteImage(image);
       currentImages.splice(index, 1);
       imageRemoveResults.success.push(image);
     } else {
@@ -119,15 +119,14 @@ const removeImages = (imagesToRemove = [], currentImages) => {
   return { imageRemoveResults, currentImages };
 };
 
-const removeImage = async (fileName) => {
+const deleteImage = async (fileName) => {
   const pathToFile = path.resolve(uploadsFolder, fileName);
   if (fs.existsSync(pathToFile)) {
     fs.unlinkSync(pathToFile);
   }
 };
 
-
 module.exports = {
-  removeImage,
+  deleteImage,
   handleImages,
 };

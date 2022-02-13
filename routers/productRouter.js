@@ -26,7 +26,7 @@ router
 router
   .route("/:id")
   .get(getSingleProduct)
-  .put(
+  .patch(
     [authMiddleware, checkAdminPermission, upload.array("imagesToAdd", 5)],
     updateProduct
   )
