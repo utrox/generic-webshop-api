@@ -10,6 +10,7 @@ const cookieParser = require("cookie-parser");
 
 //middlewares
 app.use("/uploads", express.static(__dirname + "/uploads"));
+app.use("/", express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -24,13 +25,10 @@ app.use("/api/v1/products", productRouter);
 app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/auth", authRouter);
 
-app.route("/populate-database").get((req, res) => {
-  res.send("AAAAAAA");
-});
-
 app.route("/").get((req, res) => {
   res.send("api is running");
 });
+
 
 // errorhandler and notfound middlewares
 const errorHandlerMiddleware = require("./middlewares/error-handler");

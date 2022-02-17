@@ -56,10 +56,14 @@ const getAllProducts = async (req, res) => {
 const getSingleProduct = async (req, res) => {
   const productID = req.params.id;
   // when requesting only one pro
-  const product = await Product.findOne({ _id: productID }).populate(
-    "reviews",
-    "title text username rating"
-  );
+  const product = await Product.findOne({ _id: productID }).populate({
+    path: "reviews",
+    populate: {
+      path: "user",
+      select: "username",
+    },
+  });
+
   if (!product) {
     return notFoundError(res, "Product", productID);
   }
@@ -111,7 +115,7 @@ const deleteProduct = async (req, res) => {
   }
   product.remove();
   res
-    .status(200)
+    .status(204)
     .json({ msg: `Product successfully deleted with id '${productID}'` });
 };
 

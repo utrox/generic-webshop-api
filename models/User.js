@@ -86,7 +86,7 @@ UserSchema.methods.generateRecoveryToken = async function (userID) {
   this.recoveryToken = await returnHash(recoveryToken);
   await this.save();
   // generate JWT and return it.
-  const jwtToken = this.createJWT(
+  const jwtToken = createJWT(
     { userID, recoveryToken: recoveryToken },
     { expiresIn: "10m" }
   );

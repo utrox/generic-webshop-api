@@ -3,3 +3,5 @@ node_modules/*
 cut-content/*
 uploads/*
 !uploads/default.png
+public
+docs

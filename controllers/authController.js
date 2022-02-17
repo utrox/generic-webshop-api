@@ -34,7 +34,9 @@ const activateAccount = async (req, res) => {
   account.activationToken = "";
   account.isActive = true;
   await account.save();
-  res.send("Your account has been activated. You can now proceed to log in.");
+  res.json({
+    msg: "Your account's been activated. Now you can proceed to log in.",
+  });
 };
 
 const login = async (req, res) => {
@@ -60,7 +62,7 @@ const login = async (req, res) => {
   const token = await user.createLoginJWT();
   // TODO remove comment from attachAuthCookie for "production" version
   attachAuthCookie(res, token);
-  res.status(200).json({ msg: "Logged in successfully." });
+  res.status(200).json({ msg: "Logged in successfully.", token });
 };
 
 const logout = async (req, res) => {
@@ -70,7 +72,7 @@ const logout = async (req, res) => {
     signed: true,
     /* secure: true, */ httpOnly: true,
   });
-  return res.status(200).send("Logged out successfully.");
+  return res.status(200).json({ msg: "Logged out successfully." });
 };
 
 const requestRecovery = async (req, res) => {
@@ -82,12 +84,14 @@ const requestRecovery = async (req, res) => {
     await sleep(1500);
     return res
       .status(200)
-      .send("Recovery email sent. It expires in 10 minutes. //fake");
+      .json({ msg: "Recovery email sent. It expires in 10 minutes." });
   }
 
   const recoveryJWT = await account.generateRecoveryToken(account.id);
   sendRecoveryEmail(email, account.username, recoveryJWT);
-  return res.status(200).send("Recovery email sent. It expires in 10 minutes.");
+  return res
+    .status(200)
+    .json({ msg: "Recovery email sent. It expires in 10 minutes." });
 };
 
 const recovery = async (req, res) => {
@@ -119,7 +123,7 @@ const recovery = async (req, res) => {
 
   account.password = newPassword;
   await account.save();
-  res.status(200).send("Password has changed.");
+  res.status(200).json({ msg: "Password changed successfully." });
 };
 
 // temporary solution instead of requiring a front-end
