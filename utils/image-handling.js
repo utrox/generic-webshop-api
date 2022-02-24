@@ -4,7 +4,7 @@ const customError = require("./customError");
 const { nanoid } = require("nanoid");
 
 const fileSizeLimit = 1000 * 1000;
-const uploadsFolder = path.resolve(__dirname, "..", "uploads");
+const uploadsFolder = path.resolve(__dirname, "..", "public", "uploads");
 
 const handleImages = async ({
   imagesToAdd = [],

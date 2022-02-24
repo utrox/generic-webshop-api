@@ -1,0 +1,458 @@
+{
+	"info": {
+		"_postman_id": "016643d8-13fa-4bfa-ace6-2e257ccc7bbe",
+		"name": "webshop-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"bob2\", \"email\": \"bob2@gmail.com\", \"password\": \"secret\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}auth/register",
+							"host": [
+								"{{URL}}auth"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"email\": \"guy@gmail.com\", \"password\": \"secret\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}auth/login",
+							"host": [
+								"{{URL}}auth"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}auth/logout",
+							"host": [
+								"{{URL}}auth"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request recovery email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"bob@email.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}auth/recovery",
+							"host": [
+								"{{URL}}auth"
+							],
+							"path": [
+								"recovery"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recover Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"newPassword\": \"asd123\", \"confirmNewPassword\": \"asd123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}auth/recovery/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7InVzZXJJRCI6IjYyMDI5YzNmZjcxNTliNWUyNDlmNTA5ZSIsInJlY292ZXJ5VG9rZW4iOiJlNjJmNzYxMWJjMDFlZDJjOTc3YmI4NTkxNTFlMGM3ZCJ9LCJpYXQiOjE2NDQzMzg1MTcsImV4cCI6MTY0NDMzOTExN30.TlnioxV7IN1pMdpNZRhVGB8rhjh7KWWKdIvFjkwfJ50",
+							"host": [
+								"{{URL}}auth"
+							],
+							"path": [
+								"recovery",
+								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7InVzZXJJRCI6IjYyMDI5YzNmZjcxNTliNWUyNDlmNTA5ZSIsInJlY292ZXJ5VG9rZW4iOiJlNjJmNzYxMWJjMDFlZDJjOTc3YmI4NTkxNTFlMGM3ZCJ9LCJpYXQiOjE2NDQzMzg1MTcsImV4cCI6MTY0NDMzOTExN30.TlnioxV7IN1pMdpNZRhVGB8rhjh7KWWKdIvFjkwfJ50"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create new product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "New Product from form",
+									"type": "default"
+								},
+								{
+									"key": "description",
+									"value": "This is the description of the product.",
+									"type": "default"
+								},
+								{
+									"key": "price",
+									"value": "299",
+									"type": "default"
+								},
+								{
+									"key": "manufacturer",
+									"value": "ikea",
+									"type": "default"
+								},
+								{
+									"key": "category",
+									"value": "other",
+									"type": "default"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": [
+										"/C:/Users/Bence/Desktop/pics/oldman3.png",
+										"/C:/Users/Bence/Desktop/pics/oldman4.png",
+										"/C:/Users/Bence/Desktop/pics/pexels-andrea-piacquadio-3783574.jpg"
+									]
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}products",
+							"host": [
+								"{{URL}}products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}products/?order_by=-name",
+							"host": [
+								"{{URL}}products"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "price",
+									"value": "100-200",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "ikea",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "kitchen",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "product",
+									"disabled": true
+								},
+								{
+									"key": "order_by",
+									"value": "-name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}products/62097b80a65f44d532d16397",
+							"host": [
+								"{{URL}}products"
+							],
+							"path": [
+								"62097b80a65f44d532d16397"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Single Product",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "New Product name",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "New description.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "price",
+									"value": "399",
+									"type": "text"
+								},
+								{
+									"key": "manufacturer",
+									"value": "ikea",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "other",
+									"type": "text"
+								},
+								{
+									"key": "imagesToRemove",
+									"value": "62098851d5fe8975770f174d_G5GvfbsFLhBhNEcTT1LqK.jpg",
+									"type": "text"
+								},
+								{
+									"key": "imagesToRemove",
+									"value": "nonexistent.jpg",
+									"type": "default"
+								},
+								{
+									"key": "imagesToRemove",
+									"value": "62098851d5fe8975770f174d_REV-Rv0qevC7Gu9wSs5xR.jpg",
+									"type": "text"
+								},
+								{
+									"key": "imagesToAdd",
+									"type": "file",
+									"src": [
+										"/C:/Users/Bence/Desktop/pics/oldman4.png",
+										"/C:/Users/Bence/Desktop/pics/yeet.txt"
+									]
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}products/620984a9dcecc2eaa3d3d48f",
+							"host": [
+								"{{URL}}products"
+							],
+							"path": [
+								"620984a9dcecc2eaa3d3d48f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Single Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}products/6208e85c583aaca0105a1e05",
+							"host": [
+								"{{URL}}products"
+							],
+							"path": [
+								"6208e85c583aaca0105a1e05"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Review",
+			"item": [
+				{
+					"name": "Create new review",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product\": \"62097b80a65f44d532d16397\",\r\n    \"rating\" : 10,\r\n    \"title\": \"Good product.\",\r\n    \"text\": \"Good product\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}reviews",
+							"host": [
+								"{{URL}}reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}reviews",
+							"host": [
+								"{{URL}}reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single review",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}reviews/62097cecb37f22efe3273bd8",
+							"host": [
+								"{{URL}}reviews"
+							],
+							"path": [
+								"62097cecb37f22efe3273bd8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Single review",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"New review text.\",\r\n    \"rating\" : 5,\r\n    \"title\": \"Love it\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}reviews/62097e63c3fcb6489673af82",
+							"host": [
+								"{{URL}}reviews"
+							],
+							"path": [
+								"62097e63c3fcb6489673af82"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Single review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}reviews/62097da623cb6a9c487acf6f",
+							"host": [
+								"{{URL}}reviews"
+							],
+							"path": [
+								"62097da623cb6a9c487acf6f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

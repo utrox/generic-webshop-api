@@ -35,6 +35,7 @@ const ReviewSchema = mongoose.Schema(
 
 const updateAvarageReview = async function () {
   // find all reviews referencing the same product
+  console.time("updateAvarageReview");
   const reviewsAboutProduct = await Review.find({ product: this.product });
   const product = await Product.findOne({ _id: this.product });
 
@@ -56,6 +57,7 @@ const updateAvarageReview = async function () {
   product.averageRating = averageRating;
   await product.save();
   console.log(product.averageRating);
+  console.timeEnd("updateAvarageReview");
 };
 
 ReviewSchema.post("save", updateAvarageReview);
