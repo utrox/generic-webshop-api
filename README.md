@@ -2,12 +2,13 @@
 This project is modeled like a typical webshop's `REST API`, using `Node.js`, `Express.js`, and the NoSQL database `MongoDB`. Users can view product listings and read reviews about the products. Registered users can also leave reviews, or if they already reviewed the product edit and delete their own reviews. To create new products, edit or delete them, and for moderating reviews the user has to have administrator privileges. You can authenticate yourself by either attaching a `Bearer token` to your request, or using `cookies` automatically attached to your requests after successfully logging in via the `/login` route. 
 
 #### [Import the Postman configuration for easier API testing!](https://github.com/utrox/generic-webshop-api-sql/tree/main/public)
+#### [Check out the MySQL version of this project too!](https://github.com/utrox/generic-webshop-api-sql)
 
 # API endpoints 
 
 ## AUTHENTICATION
 ### Register
-`{{url}}/api/v1/auth/register`
+`{{domain}}/api/v1/auth/register`
 
 POST request. Providing a valid unused email address, an unused username, and a sufficient password will create a user account in the database. Before logging in however, the user must verify their email address to activate their account by using the token sent to their email inbox after registration.
 			
@@ -35,7 +36,7 @@ Example response:
 ```
 	
 ### Login
-`{{url}}/api/v1/auth/login`
+`{{domain}}/api/v1/auth/login`
 
 POST request. Sends back the token as a cookie. The user is logged in until they either log out, or until the JWT token expires. (24h)
 			
@@ -63,7 +64,7 @@ Example response:
 ```
 
 ### Logout
-`{{url}}/api/v1/auth/logout`
+`{{domain}}/api/v1/auth/logout`
 
 POST request. Deletes the cookie if it exists, thus removing the authentication token, and logging the user out.
 The server sends back a cookie attached to the response overwriting the one containing the JWT needed for logging in, and expires almost immediately.
@@ -77,7 +78,7 @@ Example response:
 ```
 
 ### Requesting Recovery Link
-`{{url}}/api/v1/auth/request-recovery`
+`{{domain}}/api/v1/auth/request-recovery`
 
 POST request. If the user provides a valid email address, assigned to a user in the database, a verification email gets sent to their email address to change their password.
 
@@ -100,7 +101,7 @@ Example response:
 ```
 
 ### Changing Password After Recovery
-`{{url}}/api/v1/auth/recovery`
+`{{domain}}/api/v1/auth/recovery`
 
 POST request. After requesting a recovery token, check your inbox for the email containing it. Of course normally in the email would be a link that points to the front-end of the website, where you can fill out a form to change your password. Because this is a purely back-end project, you'll have to attach that token to your request manually.
 
@@ -132,7 +133,7 @@ Example response:
 ## PRODUCTS:
 
 ### Create New Product
-`{{url}}/api/v1/products`
+`{{domain}}/api/v1/products`
 
 POST request. Requires admin privileges. Creates the product with the provided parameters, provided it passes mongoose validation. When uploading images, after renaming and writing them to the `/uploads` folder, the server stores the uploaded images' names in the database along with the other details of the product. 
 
@@ -194,13 +195,13 @@ Example response:
 ```
 
 ### Read All/Queried Products
-`{{URL}}/products/<optional queries>`
+`{{domain}}/products/<optional queries>`
 
 GET request. Doesn't require any privileges. Lists the products that match the provided queries. When accessing this route, the user is able to provide queries in the URL. This makes it possible for them to filter by price, category and manufacturer, search for in the title, and order by any of these properties, even combined. 
 
 Example request: 
 
-`{{URL}}/products/?search={str}&price={num}-{num}&category={str}&manufacturer={str}&order_by={field}`
+`{{domain}}/products/?search={str}&price={num}-{num}&category={str}&manufacturer={str}&order_by={field}`
 
 ```    
 {
@@ -233,13 +234,13 @@ Example request:
 ```
 
 ### Read Single Product
-`{{URL}}/products/<productID>`
+`{{domain}}/products/<productID>`
 
 GET request. Doesn't require any privileges. Returns the product by this ID, provided it exists in the database. 
 
 Example request:
 
-`{{URL}}/products/62082d63uuddlrlrbaa500dd527`
+`{{domain}}/products/62082d63uuddlrlrbaa500dd527`
 ```
 
 Example response: 
@@ -303,7 +304,7 @@ Example response:
 
 
 ### Update Product
-`{{URL}}products/<productID>`
+`{{domain}}products/<productID>`
 
 PATCH request. Requires admin privileges. Gets the `productID` from the URL and the new values from the body of the request. If a `Product` with this ID exists in the database, the server tries to update it with the new values. Because this is a PATCH request rather than a PUT request, you only need to provide fields that you want changed. Mongoose handles validation once more. You can also add and remove images from the product. 
 
@@ -325,7 +326,7 @@ Request body:
 
 Example request:
 
-{{URL}}products/62082d63fd22237a500dd527
+{{domain}}products/62082d63fd22237a500dd527
 
 {
     "title": "New Product name"
@@ -384,7 +385,7 @@ Example response:
 ```
 
 ### Delete Product
-`{{URL}}products/62082d63fd22237a500dd527`
+`{{domain}}products/62082d63fd22237a500dd527`
 
 DELETE request. Requires admin privileges. Gets the `productID` from the URL.
 If the product with this ID exists in the database, it gets removed. Before removing the product, all of the reviews about that product (any review that reference it's ID in their 'product' property) also get deleted. 
@@ -402,7 +403,7 @@ Example response
 
 
 ### Creating Review
-`{{URL}}/api/v1/reviews`
+`{{domain}}/api/v1/reviews`
 
 POST route. Requires user to be logged in. 
 The user can create a review about a product. For every product, a user can only post one review. 
@@ -444,7 +445,7 @@ Example response:
 ```
 
 ### Getting All Reviews
-`{{URL}}/api/v1/reviews`
+`{{domain}}/api/v1/reviews`
 
 GET route. Doesn't require any permissions. 
 
@@ -500,7 +501,7 @@ Exampre response:
 ```
 
 ### Getting A Single Review
-`{{URL}}/api/v1/reviews/<reviewID>`
+`{{domain}}/api/v1/reviews/<reviewID>`
 
 GET route. Doesn't require any permissions. Gets the reviewID from the URL.
 Checks if the review with the specified `reviewID` exists. If so, sends back a response containing this data.
@@ -533,7 +534,7 @@ Example response:
 ```
 
 ### Updating Review
-`{{URL}}/api/v1/reviews/<reviewID>`
+`{{domain}}/api/v1/reviews/<reviewID>`
 
 PATCH route. Requires either admin or original poster privileges. 
 Checks if the review with the specified reviewID exists. Gets the new values from the body, and tries to update these fields. Because this is a PATCH request rather than a PUT request, you only need to provide fields that you want changed. 
@@ -576,7 +577,7 @@ Example response:
 ```
 
 ### Deleting Review
-`{{URL}}/api/v1/reviews/<reviewID>`
+`{{domain}}/api/v1/reviews/<reviewID>`
 
 DELETE route. Requires either admin or original poster privileges. 
 Checks if the review with the specified reviewID exists. If so, the server removes it from the database.
