@@ -631,3 +631,7 @@ Once all of these are confirmed, the new hashed password gets saved in the datab
 
 ## Calculating Avarage Rating
 Every time a `Review` about a product is created, modified or deleted, the server automatically updates that product's avarage rating. This is achieved using a `mongoose hook` that fire after the modifications take effect. The server queries for all the reviews that are about this particular product, and then calculates their ratings' average value. Finally, it updates the product's `averageRating` field. 
+
+
+### TODO 
+- add order functionality 
