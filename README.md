@@ -16,6 +16,7 @@ Mongoose validates that both the email address and username are unique and valid
 
 ```
 Request body:
+
 {
     "username": <username>;
     "email": <email address>;
@@ -23,6 +24,7 @@ Request body:
 }
 			
 Example Request body:
+
 {
     "username": "bob2", 
     "email": "bob2@email.com", 
@@ -30,6 +32,7 @@ Example Request body:
 }
 
 Example response: 
+
 {
     "msg": "Account successfully created. Please verify your email address before proceeding."
 }
@@ -45,20 +48,24 @@ After providing a username and password, the server searches for the username in
 ```
 
 Request body:
+
 {
     "email": <email address>
     "password": <password>
 }
 
 Example Request body:
+
 {
     "email": "bob2@email.com", 
     "password": "secret"
 }
 
 Example response: 
+
 {
-    "msg": "Logged in successfully."
+    "msg": "Logged in successfully.",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7InVzZXJJRCI6IjYyMjEyNTdiY2RhOTJmN2M4MDZhNWRkZCIsInJvbGUiOiJhZG1pbiJ9LCJpYXQiOjE2NDY0MjM0MzYsImV4cCI6MTY0NjUwOTgzNn0.00PiryKuFiPw91DHhX1O-vangHenwdfjUAa2Qt3lf6E"
 }
 		
 ```
@@ -72,6 +79,7 @@ The server sends back a cookie attached to the response overwriting the one cont
 ```
 
 Example response:
+
 {
     msg: "Logged out successfully."
 }
@@ -86,15 +94,18 @@ The server generates a random recovery token that is hashed and stored in the da
 
 ```
 Request body:
+
 {
     "email": <email address>
 }
 
 Example Request body:
+
 {
     "email": "bob2@email.com"
 }
 Example response:
+
 {
     "msg": "Recovery email sent. It expires in 10 minutes."
 }
@@ -109,6 +120,7 @@ After verifying the JWT token, the server gets the user by that ID from the data
 
 ```
 Request body:
+
 {
 
     "newPassword": <new password>,
@@ -118,6 +130,7 @@ Request body:
 }
 
 Example Request body:
+
 {
  "newPassword": "secretpassword", 
  "confirmNewPassword": "secretpassword",
@@ -125,6 +138,7 @@ Example Request body:
 }
 
 Example response:
+
 {
     msg: "Password changed successfully." 
 }
@@ -141,6 +155,7 @@ POST request. Requires admin privileges. Creates the product with the provided p
 
 ```
 Request body:
+
 {
     "title": <title, (max 100 char.)>
     "description": <description (max 500 char.)>
@@ -161,6 +176,7 @@ Example request:
 }
 
 Example response: 
+
 {
     "msg": "Product succesfully created",
     "product": {
@@ -314,6 +330,7 @@ PATCH request. Requires admin privileges. Gets the `productID` from the URL and 
 ```
 
 Request body:
+
 {
     "title": <new title, (max 100 char. )>
     "description": <new description (max 500 char.)>
@@ -341,6 +358,7 @@ Example request:
 }
 
 Example response: 
+
 {
     "msg": "Updating the product was successful.",
     "product": {
@@ -393,6 +411,7 @@ If the product with this ID exists in the database, it gets removed. Before remo
 ```
 
 Example response 
+
 {			
     "msg": "Product successfully deleted with id '62098851d5fe8975770f174d'"
 }
@@ -412,6 +431,7 @@ The server checks if a product with the provided `productID` exists in the datab
 
 ```
 Request body:
+
     {
         "product": <productID>,
         "rating" : <number between 1 and 5>,
@@ -429,6 +449,7 @@ Example request:
     }
 
 Example response:  
+
     {
         "msg": "Review succesfully created",
         "review": {
@@ -509,6 +530,7 @@ Checks if the review with the specified `reviewID` exists. If so, sends back a r
 ```
 
 Example response: 
+
 {
     "review": {
         "_id": "6208ed9389379a3d2ac85328",
@@ -584,6 +606,7 @@ Checks if the review with the specified reviewID exists. If so, the server remov
 
 ```
 Example response:
+
     {
         "msg": "Review successfully deleted with id '6208335c329b5b05be326c0e'"
     }
