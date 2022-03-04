@@ -1,7 +1,6 @@
 const Product = require("../models/Product");
 const notFoundError = require("../utils/notFoundError");
 const { handleImages } = require("../utils/image-handling.js");
-const CustomError = require("../utils/customError");
 
 const createProduct = async (req, res) => {
   // create the product
@@ -23,6 +22,7 @@ const createProduct = async (req, res) => {
   product.images = newImages;
   product.markModified("images");
   await product.save();
+
   res.status(201).json({
     msg: "Product succesfully created",
     product,
@@ -42,11 +42,12 @@ const getAllProducts = async (req, res) => {
   category && (queryParameters.category = category);
   manufacturer && (queryParameters.manufacturer = manufacturer);
 
-  // if a price is given...
+  // if a price is given, set $gte $lte queries.
   if (price) {
+    queryParameters.price = {};
     const [min, max] = price.split("-");
-    // ...check if it's a valid query. if not, ignore.
-    +min <= +max && (queryParameters.price = { $gte: min, $lte: max });
+    min && (queryParameters.price["$gte"] = min);
+    max && (queryParameters.price["$lte"] = max);
   }
 
   const products = await Product.find(queryParameters).sort(sortBy);
@@ -55,7 +56,7 @@ const getAllProducts = async (req, res) => {
 
 const getSingleProduct = async (req, res) => {
   const productID = req.params.id;
-  // when requesting only one pro
+  // list reviews, populate reviews with the poster's username.
   const product = await Product.findOne({ _id: productID }).populate({
     path: "reviews",
     populate: {
@@ -92,6 +93,7 @@ const updateProduct = async (req, res) => {
     productID: product.id,
     imagesToRemove,
   };
+
   const { imageHandling, currentImages: newData } = await handleImages(
     imagePayload
   );
@@ -110,9 +112,11 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   const productID = req.params.id;
   const product = await Product.findOne({ _id: productID });
+
   if (!product) {
     return notFoundError(res, "Product", productID);
   }
+
   product.remove();
   res
     .status(204)

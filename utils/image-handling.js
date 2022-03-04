@@ -14,6 +14,7 @@ const handleImages = async ({
 }) => {
   const imageHandling = {};
 
+  // if there are images to add, add them.
   if (imagesToAdd.length > 0) {
     var { imageUploadResults, currentImages } = await saveImages(
       imagesToAdd,
@@ -23,6 +24,7 @@ const handleImages = async ({
     imageHandling.imageUploadResults = imageUploadResults;
   }
 
+  // if there are images to remove, try to remove them.
   if (imagesToRemove.length > 0) {
     var { imageRemoveResults, currentImages } = await removeImages(
       imagesToRemove,
@@ -54,7 +56,7 @@ const validateImages = async (arrayOfImages) => {
   const validatedImages = [];
   const failedImages = [];
   arrayOfImages.forEach((image) => {
-    // check if it's an image
+    // check if file is an image
     if (!image.mimetype.startsWith("image")) {
       failedImages.push({
         image: image.originalname,
@@ -75,7 +77,7 @@ const validateImages = async (arrayOfImages) => {
 
 const renameImages = async (arrayOfImages, productID) => {
   if (!arrayOfImages) return;
-
+  // generate new names for each image.
   for await (image of arrayOfImages) {
     image.newName = `${productID}_${nanoid()}.jpg`;
   }
@@ -85,6 +87,7 @@ const renameImages = async (arrayOfImages, productID) => {
 
 const writeImagesToFile = async (arrayOfImages) => {
   const uploadedImages = [];
+  // write each image to file
   for await (image of arrayOfImages) {
     const filePath = `${uploadsFolder}\\${image.newName}`;
     await fs.writeFile(filePath, image.buffer, function (err) {
@@ -93,6 +96,7 @@ const writeImagesToFile = async (arrayOfImages) => {
         throw new customError("Please try again.", 500);
       }
     });
+    // for files that were written successfully, add them to the response.
     uploadedImages.push({
       newName: image.newName,
       originalName: image.originalname,
@@ -119,6 +123,7 @@ const removeImages = (imagesToRemove = [], currentImages) => {
   return { imageRemoveResults, currentImages };
 };
 
+// delete file from storage
 const deleteImage = async (fileName) => {
   const pathToFile = path.resolve(uploadsFolder, fileName);
   if (fs.existsSync(pathToFile)) {

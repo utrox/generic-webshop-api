@@ -6,13 +6,13 @@ const ReviewSchema = mongoose.Schema(
       type: String,
       maxlength: 100,
       trim: true,
-      required: [true, "Please input title for the review"],
+      required: [true, "Please input title for the review."],
     },
     text: {
       type: String,
       maxlength: 500,
       trim: true,
-      required: [true, "Please input text for the review body"],
+      required: [true, "Please input text for the review body."],
     },
     user: {
       type: mongoose.Types.ObjectId,
@@ -35,7 +35,6 @@ const ReviewSchema = mongoose.Schema(
 
 const updateAvarageReview = async function () {
   // find all reviews referencing the same product
-  console.time("updateAvarageReview");
   const reviewsAboutProduct = await Review.find({ product: this.product });
   const product = await Product.findOne({ _id: this.product });
 
@@ -56,8 +55,6 @@ const updateAvarageReview = async function () {
   // update the product's averageRating field.
   product.averageRating = averageRating;
   await product.save();
-  console.log(product.averageRating);
-  console.timeEnd("updateAvarageReview");
 };
 
 ReviewSchema.post("save", updateAvarageReview);

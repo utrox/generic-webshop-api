@@ -14,34 +14,39 @@ const recoveryInstructionsHTML = path.join(
 );
 
 const register = async (req, res) => {
-  // deconstruct it, so the user can't pass in "role": "admin" and grand themselves admin authorization.
   const { username, email, password } = req.body;
+
   const newUser = await User.create({ username, email, password });
+
   const activationToken = newUser.activationToken;
-  console.log(activationToken);
   sendVerifyEmail(email, username, activationToken);
+
   return res.status(201).json({
     msg: "Account successfully created. Please verify your email adress before proceeding.",
   });
 };
 
 const activateAccount = async (req, res) => {
-  const { activationToken } = req.params;
+  const { activationToken } = req.body;
+
   const account = await User.findOne({ activationToken });
+
   if (!account) {
     throw new customError("Invalid activation token.", 400);
   }
+
   account.activationToken = "";
   account.isActive = true;
   await account.save();
+
   res.json({
     msg: "Your account's been activated. Now you can proceed to log in.",
   });
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
 
   if (!user) {
     throw new customError("Wrong credentials.", 401);
@@ -60,13 +65,12 @@ const login = async (req, res) => {
   }
 
   const token = await user.createLoginJWT();
-  // TODO remove comment from attachAuthCookie for "production" version
+
   attachAuthCookie(res, token);
   res.status(200).json({ msg: "Logged in successfully.", token });
 };
 
 const logout = async (req, res) => {
-  // TODO if secure is set to true, the cookie doesn't show up in Postman. Remove for "production" version
   res.cookie("token", "", {
     maxAge: 1,
     signed: true,
@@ -80,8 +84,8 @@ const requestRecovery = async (req, res) => {
   const account = await User.findOne({ email });
   // avoid data-leak
   if (!account) {
-    console.log("email not found.");
-    await sleep(1500);
+    console.log("email not found in db.");
+    await sleep(1000);
     return res
       .status(200)
       .json({ msg: "Recovery email sent. It expires in 10 minutes." });
@@ -95,7 +99,7 @@ const requestRecovery = async (req, res) => {
 };
 
 const recovery = async (req, res) => {
-  const unverifiedToken = req.params.token;
+  const unverifiedToken = req.body.recoveryJWT;
   const { newPassword, confirmNewPassword } = req.body;
 
   if (!newPassword || newPassword !== confirmNewPassword) {
@@ -126,10 +130,6 @@ const recovery = async (req, res) => {
   res.status(200).json({ msg: "Password changed successfully." });
 };
 
-// temporary solution instead of requiring a front-end
-const recoveryInstructions = async (req, res) => {
-  res.sendFile(recoveryInstructionsHTML);
-};
 
 module.exports = {
   login,
@@ -137,6 +137,5 @@ module.exports = {
   register,
   recovery,
   requestRecovery,
-  recoveryInstructions,
   activateAccount,
 };

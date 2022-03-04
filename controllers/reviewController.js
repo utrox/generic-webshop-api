@@ -1,16 +1,10 @@
 const CustomError = require("../utils/customError");
 
 const Review = require("../models/Review");
-const notFoundError = require("../utils/notFoundError");
 const Product = require("../models/Product");
-const { checkAuthorization } = require("../utils/check-authorization");
 
-const getAllReviews = async (req, res) => {
-  const reviews = await Review.find({})
-    .populate("product", "title manufacturer price")
-    .populate("user", "username");
-  res.status(200).json({ noReviews: reviews.length, reviews });
-};
+const notFoundError = require("../utils/notFoundError");
+const { checkAuthorization } = require("../utils/check-authorization");
 
 const createReview = async (req, res) => {
   const { product: productID } = req.body;
@@ -27,6 +21,7 @@ const createReview = async (req, res) => {
     user: userID,
     product: productID,
   });
+
   if (productAlreadyReviewedByUser) {
     throw new CustomError(
       "You can only review a product once. Please edit your existing review instead.",
@@ -37,6 +32,14 @@ const createReview = async (req, res) => {
   const review = await Review.create({ ...req.body, user: userID });
 
   return res.status(201).json({ msg: "Review succesfully created", review });
+};
+
+const getAllReviews = async (req, res) => {
+  const reviews = await Review.find({})
+    .populate("product", "title manufacturer price")
+    .populate("user", "username");
+
+  res.status(200).json({ noReviews: reviews.length, reviews });
 };
 
 const getSingleReview = async (req, res) => {
@@ -61,10 +64,11 @@ const updateReview = async (req, res) => {
     return notFoundError(res, "Review", reviewID);
   }
 
-  if (!rating && !title && !text) {
+  if (!rating & !title & !text) {
     throw new CustomError("Please provide updated values.", 400);
   }
 
+  // throw error if the user is not the OP or an admin.
   checkAuthorization(review.user.valueOf(), req.user);
 
   // update fields where new value is provided
@@ -86,7 +90,7 @@ const deleteReview = async (req, res) => {
     return notFoundError(res, "Review", reviewID);
   }
 
-  // if the user is the creator, or an admin they should be able to modify the entry.
+  // throw error if the user is not the OP or an admin.
   checkAuthorization(review.user.valueOf(), req.user, res);
 
   await review.remove();

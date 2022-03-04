@@ -1,12 +1,30 @@
 // require packages
 require("dotenv").config();
-// express-async-errors middleware is used so the errors don't crash the whole server.
 require("express-async-errors");
+
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+
+const helmet = require("helmet");
+const cors = require("cors");
+const xss = require("xss-clean");
+const rateLimiter = require("express-rate-limit");
+
+// security middlewares
+app.use(
+  // only allow 40 request every 5 minutes for each user
+  rateLimiter({
+    windowMs: 5 * 60 * 1000,
+    max: 40,
+  })
+);
+app.use(helmet());
+app.use(cors());
+app.use(xss());
+
 
 //middlewares
 app.use("/uploads", express.static(__dirname + "/uploads"));

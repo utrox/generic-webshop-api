@@ -1,5 +1,5 @@
 const errorHandlerMiddleware = (err, req, res, next) => {
-  console.log(JSON.stringify(err));
+  //console.log(JSON.stringify(err));
 
   let customError = {
     // set default
@@ -8,6 +8,13 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   };
 
   if (err.name === "ValidationError") {
+    const details = [];
+    Object.values(err.errors).forEach((value) => {
+      details.push(value.message);
+    });
+    const msg =
+      "One or more of the values you've entered has failed verification.";
+    customError.msg = { msg, details };
     customError.statusCode = 400;
   }
 
@@ -33,7 +40,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
       customError.msg += `The following ${key} ('${value}') is already in use. `;
     }
   }
-  res.status(customError.statusCode).send({ msg: customError.msg });
+  return res.status(customError.statusCode).json({ error: customError.msg });
 };
 
 module.exports = errorHandlerMiddleware;

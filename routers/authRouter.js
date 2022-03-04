@@ -6,15 +6,14 @@ const {
   register,
   recovery,
   requestRecovery,
-  recoveryInstructions,
   activateAccount,
 } = require("../controllers/authController");
 
 router.post("/register", register);
-router.get("/activate-account/:activationToken", activateAccount);
+router.post("/activate-account", activateAccount);
 router.post("/login", login);
 router.post("/logout", logout);
-router.post("/recovery", requestRecovery);
-router.route("/recovery/:token").get(recoveryInstructions).post(recovery);
+router.post("/request-recovery", requestRecovery);
+router.post("/recovery", recovery);
 
 module.exports = router;

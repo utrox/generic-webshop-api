@@ -2,35 +2,37 @@ const mongoose = require("mongoose");
 const { deleteImage } = require("../utils/image-handling");
 
 const supportedCategories = [
-  "kitchen",
-  "dining room",
-  "bedroom",
-  "living room",
   "bathroom",
+  "bedroom",
+  "dining room",
+  "hallway",
+  "kitchen",
+  "office",
   "other",
+  "outside",
 ];
 
-// construct Product the schema
+// construct Product schema
 const ProductSchema = mongoose.Schema(
   {
     title: {
       type: String,
       maxlength: 100,
       trim: true,
-      required: [true, "Please input name for the product"],
+      required: [true, "Please input name for the product."],
     },
 
     description: {
       type: String,
       maxlength: 500,
       trim: true,
-      required: [true, "Please input description for the product"],
+      required: [true, "Please input description for the product."],
     },
 
     price: {
       type: Number,
       min: [1, "Price cannot be lower than $1."],
-      required: [true, "Please input price for the product"],
+      required: [true, "Please input price for the product."],
     },
 
     averageRating: {
@@ -50,7 +52,7 @@ const ProductSchema = mongoose.Schema(
       type: String,
       enum: {
         values: supportedCategories,
-        message: `{VALUE} is not a supported category. Supported categories: ${supportedCategories}`,
+        message: `{VALUE} is not a supported category. Supported categories: ${supportedCategories}.`,
       },
       required: [true, "Please input category for the product."],
     },

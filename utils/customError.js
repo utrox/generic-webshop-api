@@ -1,3 +1,4 @@
+// usage: throw new CustomError(<error-message>, <statuscode>)
 class CustomError extends Error {
   constructor(message, statusCode) {
     super(message);

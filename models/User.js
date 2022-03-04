@@ -11,27 +11,27 @@ const UserSchema = mongoose.Schema(
       type: String,
       minlength: 3,
       maxlength: 20,
-      required: [true, "Please provide username"],
-      unique: [true, "Username already in use"],
+      required: [true, "Please provide username."],
+      unique: [true, "Username already in use."],
       trim: true,
     },
 
     email: {
       type: String,
       maxlength: 40,
-      required: [true, "Please provide email adress"],
-      unique: [true, "Email adress already in use"],
+      required: [true, "Please provide email adress."],
+      unique: [true, "Email adress already in use."],
       trim: true,
       // validate if it's a valid email adress or not.
       match: [
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        "Please provide a valid email adress",
+        "Please provide a valid email adress.",
       ],
     },
 
     password: {
       type: String,
-      required: [true, "Please provide password"],
+      required: [true, "Please provide password."],
     },
 
     role: {
@@ -56,7 +56,8 @@ const UserSchema = mongoose.Schema(
 );
 
 UserSchema.pre("save", async function (next) {
-  // hash the password before saving to the database if it's a new entry, or has been changed. When editing existing entries this ensures that the password doesn't get hashed again.
+  // hash the password before saving to the database if it's a new entry, or has been changed.
+  // When editing existing entries this ensures that the password doesn't get unnecessarily hashed again.
   if (this.isNew || this.modifiedPaths().includes("password")) {
     // check if password's valid
     if (this.password.length < 6 || this.password.length > 12) {
@@ -73,7 +74,6 @@ UserSchema.pre("save", async function (next) {
 });
 
 UserSchema.methods.createLoginJWT = async function () {
-  console.log(this);
   const payload = { userID: this._id, role: this.role };
   return createJWT(payload, { expiresIn: "24h" });
 };
@@ -82,7 +82,6 @@ UserSchema.methods.generateRecoveryToken = async function (userID) {
   // generate random recovery token
   const recoveryToken = crypto.randomBytes(16).toString("hex");
   // hash and store it in the database
-  console.log(recoveryToken);
   this.recoveryToken = await returnHash(recoveryToken);
   await this.save();
   // generate JWT and return it.
@@ -95,7 +94,6 @@ UserSchema.methods.generateRecoveryToken = async function (userID) {
 
 UserSchema.methods.validateRecoveryToken = async function (recoveryToken) {
   const isValid = await bcrypt.compare(recoveryToken, this.recoveryToken);
-  console.log(isValid);
   if (!isValid) {
     throw new customError("Invalid token.", 401);
   }
