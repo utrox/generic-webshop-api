@@ -1,7 +1,7 @@
 # Overview of the project
 This project is modeled like a typical webshop's `REST API`, using `Node.js`, `Express.js`, and the NoSQL database `MongoDB`. Users can view product listings and read reviews about the products. Registered users can also leave reviews, or if they already reviewed the product edit and delete their own reviews. To create new products, edit or delete them, and for moderating reviews the user has to have administrator privileges. You can authenticate yourself by either attaching a `Bearer token` to your request, or using `cookies` automatically attached to your requests after successfully logging in via the `/login` route. 
 
-#### [Import the Postman configuration for easier API testing!](https://github.com/utrox/generic-webshop-api-sql/tree/main/public)
+#### [Import the Postman configuration for easier API testing!](https://github.com/utrox/generic-webshop-api/tree/main/public/postman-config)
 #### [Check out the MySQL version of this project too!](https://github.com/utrox/generic-webshop-api-sql)
 
 # API endpoints 
