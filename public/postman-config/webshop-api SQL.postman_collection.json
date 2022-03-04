@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "016643d8-13fa-4bfa-ace6-2e257ccc7bbe",
-		"name": "webshop-api",
+		"_postman_id": "0846bf96-69d7-477a-a3fc-687fd9058979",
+		"name": "webshop-api SQL Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"bob2\", \"email\": \"bob2@gmail.com\", \"password\": \"secret\"\r\n}",
+							"raw": "{\r\n    \"username\": \"<username>\",\r\n    \"email\": \"<email adress>\", \r\n    \"password\": \"<password>\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -23,12 +23,44 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}auth/register",
+							"raw": "{{URL}}/api/v1/auth/register",
 							"host": [
-								"{{URL}}auth"
+								"{{URL}}"
 							],
 							"path": [
+								"api",
+								"v1",
+								"auth",
 								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ActivateAccount",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"activationToken\": \"<activation token>\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/auth/activate-account",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"activate-account"
 							]
 						}
 					},
@@ -41,7 +73,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n   \"email\": \"guy@gmail.com\", \"password\": \"secret\" \r\n}",
+							"raw": "{\r\n    \"username\": \"<username>\",\r\n    \"email\": \"<email>\",\r\n    \"password\": \"<password>\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -49,11 +81,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}auth/login",
+							"raw": "{{URL}}/api/v1/auth/login",
 							"host": [
-								"{{URL}}auth"
+								"{{URL}}"
 							],
 							"path": [
+								"api",
+								"v1",
+								"auth",
 								"login"
 							]
 						}
@@ -66,11 +101,14 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}auth/logout",
+							"raw": "{{URL}}/api/v1/auth/logout",
 							"host": [
-								"{{URL}}auth"
+								"{{URL}}"
 							],
 							"path": [
+								"api",
+								"v1",
+								"auth",
 								"logout"
 							]
 						}
@@ -84,7 +122,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"bob@email.com\"\r\n}",
+							"raw": "{\r\n    \"email\": \"<email adress>\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -92,12 +130,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}auth/recovery",
+							"raw": "{{URL}}/api/v1/auth/request-recovery",
 							"host": [
-								"{{URL}}auth"
+								"{{URL}}"
 							],
 							"path": [
-								"recovery"
+								"api",
+								"v1",
+								"auth",
+								"request-recovery"
 							]
 						}
 					},
@@ -110,7 +151,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n \"newPassword\": \"asd123\", \"confirmNewPassword\": \"asd123\"\r\n}",
+							"raw": "{\r\n \"newPassword\": \"<new passowrd>\", \r\n \"confirmNewPassword\": \"<new password again>\",\r\n \"recoveryJWT\": \"<token from email>\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -118,13 +159,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}auth/recovery/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7InVzZXJJRCI6IjYyMDI5YzNmZjcxNTliNWUyNDlmNTA5ZSIsInJlY292ZXJ5VG9rZW4iOiJlNjJmNzYxMWJjMDFlZDJjOTc3YmI4NTkxNTFlMGM3ZCJ9LCJpYXQiOjE2NDQzMzg1MTcsImV4cCI6MTY0NDMzOTExN30.TlnioxV7IN1pMdpNZRhVGB8rhjh7KWWKdIvFjkwfJ50",
+							"raw": "{{URL}}/api/v1/auth/recovery",
 							"host": [
-								"{{URL}}auth"
+								"{{URL}}"
 							],
 							"path": [
-								"recovery",
-								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7InVzZXJJRCI6IjYyMDI5YzNmZjcxNTliNWUyNDlmNTA5ZSIsInJlY292ZXJ5VG9rZW4iOiJlNjJmNzYxMWJjMDFlZDJjOTc3YmI4NTkxNTFlMGM3ZCJ9LCJpYXQiOjE2NDQzMzg1MTcsImV4cCI6MTY0NDMzOTExN30.TlnioxV7IN1pMdpNZRhVGB8rhjh7KWWKdIvFjkwfJ50"
+								"api",
+								"v1",
+								"auth",
+								"recovery"
 							]
 						}
 					},
@@ -138,6 +181,9 @@
 				{
 					"name": "Create new product",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -145,37 +191,33 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "New Product from form",
+									"value": "title",
 									"type": "default"
 								},
 								{
 									"key": "description",
-									"value": "This is the description of the product.",
+									"value": "description",
 									"type": "default"
 								},
 								{
 									"key": "price",
-									"value": "299",
+									"value": "price",
 									"type": "default"
 								},
 								{
 									"key": "manufacturer",
-									"value": "ikea",
+									"value": "manufacturer",
 									"type": "default"
 								},
 								{
 									"key": "category",
-									"value": "other",
+									"value": "category",
 									"type": "default"
 								},
 								{
 									"key": "images",
 									"type": "file",
-									"src": [
-										"/C:/Users/Bence/Desktop/pics/oldman3.png",
-										"/C:/Users/Bence/Desktop/pics/oldman4.png",
-										"/C:/Users/Bence/Desktop/pics/pexels-andrea-piacquadio-3783574.jpg"
-									]
+									"src": []
 								}
 							],
 							"options": {
@@ -185,9 +227,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}products",
+							"raw": "{{URL}}/api/v1/products/",
 							"host": [
-								"{{URL}}products"
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products",
+								""
 							]
 						}
 					},
@@ -195,41 +243,57 @@
 				},
 				{
 					"name": "Get all products",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{URL}}products/?order_by=-name",
+							"raw": "{{URL}}/api/v1/products/?price=min-max&manufacturer=manufacturer&category=category&order_by=field&search=search in title",
 							"host": [
-								"{{URL}}products"
+								"{{URL}}"
 							],
 							"path": [
+								"api",
+								"v1",
+								"products",
 								""
 							],
 							"query": [
 								{
 									"key": "price",
-									"value": "100-200",
-									"disabled": true
+									"value": "min-max",
+									"description": "optional"
 								},
 								{
 									"key": "manufacturer",
-									"value": "ikea",
-									"disabled": true
+									"value": "manufacturer",
+									"description": "optional"
 								},
 								{
 									"key": "category",
-									"value": "kitchen",
-									"disabled": true
-								},
-								{
-									"key": "search",
-									"value": "product",
-									"disabled": true
+									"value": "category",
+									"description": "optional"
 								},
 								{
 									"key": "order_by",
-									"value": "-name"
+									"value": "field",
+									"description": "optional"
+								},
+								{
+									"key": "search",
+									"value": "search in title",
+									"description": "optional"
 								}
 							]
 						}
@@ -242,12 +306,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}products/62097b80a65f44d532d16397",
+							"raw": "{{URL}}/api/v1/products/<product_id>",
 							"host": [
-								"{{URL}}products"
+								"{{URL}}"
 							],
 							"path": [
-								"62097b80a65f44d532d16397"
+								"api",
+								"v1",
+								"products",
+								"<product_id>"
 							]
 						}
 					},
@@ -266,53 +333,48 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "New Product name",
+									"value": "Edited title",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "New description.",
-									"type": "text",
-									"disabled": true
+									"value": "Edited description",
+									"type": "text"
 								},
 								{
 									"key": "price",
-									"value": "399",
+									"value": "edited price",
 									"type": "text"
 								},
 								{
 									"key": "manufacturer",
-									"value": "ikea",
-									"type": "text",
-									"disabled": true
+									"value": "edited manufacturer",
+									"type": "text"
 								},
 								{
 									"key": "category",
-									"value": "other",
+									"value": "edited category",
 									"type": "text"
 								},
 								{
 									"key": "imagesToRemove",
-									"value": "62098851d5fe8975770f174d_G5GvfbsFLhBhNEcTT1LqK.jpg",
+									"value": "image_name1.jpg",
 									"type": "text"
 								},
 								{
 									"key": "imagesToRemove",
-									"value": "nonexistent.jpg",
+									"value": "image_name2.jpg",
 									"type": "default"
 								},
 								{
 									"key": "imagesToRemove",
-									"value": "62098851d5fe8975770f174d_REV-Rv0qevC7Gu9wSs5xR.jpg",
+									"value": "...",
 									"type": "text"
 								},
 								{
 									"key": "imagesToAdd",
 									"type": "file",
-									"src": [
-										"/C:/Users/Bence/Desktop/pics/oldman4.png",
-										"/C:/Users/Bence/Desktop/pics/yeet.txt"
-									]
+									"src": []
 								}
 							],
 							"options": {
@@ -322,12 +384,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}products/620984a9dcecc2eaa3d3d48f",
+							"raw": "{{URL}}/api/v1/products/<product_id>",
 							"host": [
-								"{{URL}}products"
+								"{{URL}}"
 							],
 							"path": [
-								"620984a9dcecc2eaa3d3d48f"
+								"api",
+								"v1",
+								"products",
+								"<product_id>"
 							]
 						}
 					},
@@ -339,12 +404,15 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}products/6208e85c583aaca0105a1e05",
+							"raw": "{{URL}}/api/v1/products/<product_id>",
 							"host": [
-								"{{URL}}products"
+								"{{URL}}"
 							],
 							"path": [
-								"6208e85c583aaca0105a1e05"
+								"api",
+								"v1",
+								"products",
+								"<product_id>"
 							]
 						}
 					},
@@ -362,7 +430,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"product\": \"62097b80a65f44d532d16397\",\r\n    \"rating\" : 10,\r\n    \"title\": \"Good product.\",\r\n    \"text\": \"Good product\"\r\n}",
+							"raw": "{\r\n    \"product\": \"<product_id> (optional)\",\r\n    \"rating\" : \"<rating 1-5 >\",\r\n    \"title\": \"<title of review> (optional)\",\r\n    \"text\": \"<description of review> (optional)\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -370,23 +438,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}reviews",
+							"raw": "{{URL}}/api/v1/reviews",
 							"host": [
-								"{{URL}}reviews"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get all reviews",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URL}}reviews",
-							"host": [
-								"{{URL}}reviews"
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
 							]
 						}
 					},
@@ -398,12 +457,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}reviews/62097cecb37f22efe3273bd8",
+							"raw": "{{URL}}/api/v1/reviews/<review_id>",
 							"host": [
-								"{{URL}}reviews"
+								"{{URL}}"
 							],
 							"path": [
-								"62097cecb37f22efe3273bd8"
+								"api",
+								"v1",
+								"reviews",
+								"<review_id>"
 							]
 						}
 					},
@@ -416,7 +478,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"text\": \"New review text.\",\r\n    \"rating\" : 5,\r\n    \"title\": \"Love it\"\r\n}",
+							"raw": "{\r\n    \"rating\" : \"<rating 1-5 >\",\r\n    \"title\": \"<title of review> (optional)\",\r\n    \"text\": \"<description of review> (optional)\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -424,12 +486,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}reviews/62097e63c3fcb6489673af82",
+							"raw": "{{URL}}/api/v1/reviews/<review_id>",
 							"host": [
-								"{{URL}}reviews"
+								"{{URL}}"
 							],
 							"path": [
-								"62097e63c3fcb6489673af82"
+								"api",
+								"v1",
+								"reviews",
+								"<review_id>"
 							]
 						}
 					},
@@ -441,12 +506,15 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}reviews/62097da623cb6a9c487acf6f",
+							"raw": "{{URL}}/api/v1/reviews/<review_id>",
 							"host": [
-								"{{URL}}reviews"
+								"{{URL}}"
 							],
 							"path": [
-								"62097da623cb6a9c487acf6f"
+								"api",
+								"v1",
+								"reviews",
+								"<review_id>"
 							]
 						}
 					},

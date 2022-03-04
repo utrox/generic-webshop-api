@@ -79,6 +79,7 @@ ProductSchema.virtual("reviews", {
 ProductSchema.pre("remove", async function (next) {
   // ...remove all Reviews that reference it ...
   await Review.deleteMany({ product: this._id });
+
   // ... remove all of this Product's images from the uploads folder.
   this.images.forEach((image) => {
     deleteImage(image);
